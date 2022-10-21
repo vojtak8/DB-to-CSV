@@ -28,7 +28,8 @@ namespace DB_to_CSV
             using (SqlConnection cn = new SqlConnection(GetConnectionString()))
             {
                 cn.Open();
-                string cmd = "Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'";
+                string cmd = textBoxSelect.Text;
+                //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
                 if (true)
                 {
 
@@ -42,10 +43,11 @@ namespace DB_to_CSV
             string soubor = ""; //umístění
             List<string> radky = new List<string>(); //list pro obsah DB
 
-            if (textBoxVystup.Text.Length != 0) //ověření zadání adresáře pro výstup
+            if (textBoxVystup.Text.Length != 0 && textBoxName.Text.Length != 0 ) //ověření zadání adresáře pro výstup
             {
-                soubor = Convert.ToString(textBoxVystup.Text);
+                soubor = textBoxVystup.Text + @"\" + textBoxName.Text + ".csv";
                 //C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
+                MessageBox.Show(Convert.ToString(soubor));
                 if (reader.Read())
                 {
                     string[] sloupce = new string[reader.FieldCount];
@@ -63,12 +65,22 @@ namespace DB_to_CSV
                     radky.Add(string.Join(";", hodnoty));
                 }
 
-            System.IO.File.WriteAllLines(soubor, radky);
-            return soubor;
+                try
+                {
+                    File.WriteAllLines(soubor, radky);
+                    return soubor;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Close the .csv" + "\n" + e.Message);
+                    return null;
+                }
+            
+            
             }
             else
             {
-                MessageBox.Show("Select output directory");
+                MessageBox.Show("Select output directory or insert file name");
                 return null;
             }
 
@@ -87,7 +99,7 @@ namespace DB_to_CSV
             }
             else
             {
-                return "Server=" + a + e + "Database=" + b + e + "Integrated Security=false" + e + "User ID=" + b + e + "Password=" + c + e;
+                return "Server=" + a + e + "Database=" + b + e + "Integrated Security=false" + e + "User ID=" + c + e + "Password=" + d + e;
             }
         }
 

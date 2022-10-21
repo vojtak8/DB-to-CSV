@@ -47,8 +47,13 @@ namespace DB_to_CSV
             this.groupBoxSetDB = new System.Windows.Forms.GroupBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBoxOutput = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBoxSelect = new System.Windows.Forms.TextBox();
+            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBoxSetDB.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelIP
@@ -165,7 +170,7 @@ namespace DB_to_CSV
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 40);
+            this.label4.Location = new System.Drawing.Point(17, 46);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(102, 20);
             this.label4.TabIndex = 12;
@@ -178,6 +183,7 @@ namespace DB_to_CSV
             this.textBoxVystup.Name = "textBoxVystup";
             this.textBoxVystup.Size = new System.Drawing.Size(267, 26);
             this.textBoxVystup.TabIndex = 13;
+            this.textBoxVystup.Text = "C:\\Users\\vpivonka\\Desktop\\VS projekty";
             // 
             // groupBoxSetDB
             // 
@@ -212,21 +218,62 @@ namespace DB_to_CSV
             // 
             // groupBoxOutput
             // 
+            this.groupBoxOutput.Controls.Add(this.label5);
+            this.groupBoxOutput.Controls.Add(this.textBoxName);
             this.groupBoxOutput.Controls.Add(this.textBoxVystup);
             this.groupBoxOutput.Controls.Add(this.label4);
             this.groupBoxOutput.Controls.Add(this.buttonFileBrowser);
             this.groupBoxOutput.Location = new System.Drawing.Point(617, 36);
             this.groupBoxOutput.Name = "groupBoxOutput";
-            this.groupBoxOutput.Size = new System.Drawing.Size(438, 150);
+            this.groupBoxOutput.Size = new System.Drawing.Size(438, 221);
             this.groupBoxOutput.TabIndex = 16;
             this.groupBoxOutput.TabStop = false;
             this.groupBoxOutput.Text = "Output settings";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.textBoxSelect);
+            this.groupBox1.Location = new System.Drawing.Point(34, 387);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1048, 146);
+            this.groupBox1.TabIndex = 17;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Příkaz";
+            // 
+            // textBoxSelect
+            // 
+            this.textBoxSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxSelect.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.textBoxSelect.Location = new System.Drawing.Point(32, 41);
+            this.textBoxSelect.Multiline = true;
+            this.textBoxSelect.Name = "textBoxSelect";
+            this.textBoxSelect.Size = new System.Drawing.Size(989, 79);
+            this.textBoxSelect.TabIndex = 12;
+            this.textBoxSelect.Text = "Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit\r\nFrom Process" +
+    "Data\r\nWhere SerialNumber=\'40000557220810 \' OR SerialNumber=\'40000559220810\'";
+            // 
+            // textBoxName
+            // 
+            this.textBoxName.Location = new System.Drawing.Point(138, 157);
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.Size = new System.Drawing.Size(212, 26);
+            this.textBoxName.TabIndex = 14;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(17, 160);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(84, 20);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Název csv:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1124, 612);
+            this.ClientSize = new System.Drawing.Size(1227, 612);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBoxOutput);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBoxSetDB);
@@ -237,6 +284,8 @@ namespace DB_to_CSV
             this.groupBoxSetDB.PerformLayout();
             this.groupBoxOutput.ResumeLayout(false);
             this.groupBoxOutput.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -262,6 +311,10 @@ namespace DB_to_CSV
         private System.Windows.Forms.GroupBox groupBoxSetDB;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.GroupBox groupBoxOutput;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox textBoxSelect;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBoxName;
     }
 }
 
