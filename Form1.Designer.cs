@@ -29,6 +29,7 @@ namespace DB_to_CSV
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.labelIP = new System.Windows.Forms.Label();
             this.textBoxNastaveniDB = new System.Windows.Forms.TextBox();
             this.labelUserName = new System.Windows.Forms.Label();
@@ -39,21 +40,25 @@ namespace DB_to_CSV
             this.textBoxDbName = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBoxIS = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonStart = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.buttonFileBrowser = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxVystup = new System.Windows.Forms.TextBox();
             this.groupBoxSetDB = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.textBoxPort = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.checkBoxService = new System.Windows.Forms.CheckBox();
             this.groupBoxOutput = new System.Windows.Forms.GroupBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBoxSelect = new System.Windows.Forms.TextBox();
-            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.checkBoxAutoName = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.groupBoxPrikaz = new System.Windows.Forms.GroupBox();
+            this.textBoxSelect = new System.Windows.Forms.TextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBoxSetDB.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupBoxPrikaz.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelIP
@@ -71,7 +76,7 @@ namespace DB_to_CSV
             this.textBoxNastaveniDB.Name = "textBoxNastaveniDB";
             this.textBoxNastaveniDB.Size = new System.Drawing.Size(335, 26);
             this.textBoxNastaveniDB.TabIndex = 1;
-            this.textBoxNastaveniDB.Text = "192.168.233.20\\SQLEXPRESS, 1433";
+            this.textBoxNastaveniDB.Text = "192.168.225.136";
             // 
             // labelUserName
             // 
@@ -98,17 +103,16 @@ namespace DB_to_CSV
             this.textBoxUsername.Name = "textBoxUsername";
             this.textBoxUsername.Size = new System.Drawing.Size(175, 30);
             this.textBoxUsername.TabIndex = 4;
-            this.textBoxUsername.Text = "jhv";
+            this.textBoxUsername.Text = "LV_User";
             // 
             // textBoxPassw
             // 
             this.textBoxPassw.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxPassw.Location = new System.Drawing.Point(193, 250);
             this.textBoxPassw.Name = "textBoxPassw";
-            this.textBoxPassw.PasswordChar = '*';
             this.textBoxPassw.Size = new System.Drawing.Size(175, 30);
             this.textBoxPassw.TabIndex = 5;
-            this.textBoxPassw.Text = "2708";
+            this.textBoxPassw.Text = "MySQL4LV";
             // 
             // label1
             // 
@@ -125,7 +129,7 @@ namespace DB_to_CSV
             this.textBoxDbName.Name = "textBoxDbName";
             this.textBoxDbName.Size = new System.Drawing.Size(335, 26);
             this.textBoxDbName.TabIndex = 7;
-            this.textBoxDbName.Text = "463_ValeoRLT";
+            this.textBoxDbName.Text = "valeo_prod_db";
             // 
             // label3
             // 
@@ -147,15 +151,16 @@ namespace DB_to_CSV
             this.checkBoxIS.UseVisualStyleBackColor = true;
             this.checkBoxIS.CheckedChanged += new System.EventHandler(this.checkBoxIS_CheckedChanged);
             // 
-            // button1
+            // buttonStart
             // 
-            this.button1.Location = new System.Drawing.Point(426, 250);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(102, 39);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonStart.Location = new System.Drawing.Point(980, 562);
+            this.buttonStart.Name = "buttonStart";
+            this.buttonStart.Size = new System.Drawing.Size(112, 50);
+            this.buttonStart.TabIndex = 10;
+            this.buttonStart.Text = "BackUp";
+            this.buttonStart.UseVisualStyleBackColor = true;
+            this.buttonStart.Click += new System.EventHandler(this.button1_Click);
             // 
             // buttonFileBrowser
             // 
@@ -183,41 +188,63 @@ namespace DB_to_CSV
             this.textBoxVystup.Name = "textBoxVystup";
             this.textBoxVystup.Size = new System.Drawing.Size(267, 26);
             this.textBoxVystup.TabIndex = 13;
-            this.textBoxVystup.Text = "C:\\Users\\vpivonka\\Desktop\\VS projekty";
+            this.textBoxVystup.Text = "C:\\Users\\NIAdminFCEOL\\Desktop\\CSV";
             // 
             // groupBoxSetDB
             // 
+            this.groupBoxSetDB.Controls.Add(this.textBoxPort);
+            this.groupBoxSetDB.Controls.Add(this.label6);
             this.groupBoxSetDB.Controls.Add(this.checkBoxIS);
             this.groupBoxSetDB.Controls.Add(this.label3);
             this.groupBoxSetDB.Controls.Add(this.textBoxDbName);
             this.groupBoxSetDB.Controls.Add(this.label1);
-            this.groupBoxSetDB.Controls.Add(this.button1);
             this.groupBoxSetDB.Controls.Add(this.textBoxPassw);
             this.groupBoxSetDB.Controls.Add(this.textBoxUsername);
             this.groupBoxSetDB.Controls.Add(this.label2);
             this.groupBoxSetDB.Controls.Add(this.labelUserName);
             this.groupBoxSetDB.Controls.Add(this.textBoxNastaveniDB);
             this.groupBoxSetDB.Controls.Add(this.labelIP);
+            this.groupBoxSetDB.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBoxSetDB.Location = new System.Drawing.Point(24, 25);
             this.groupBoxSetDB.Name = "groupBoxSetDB";
-            this.groupBoxSetDB.Size = new System.Drawing.Size(555, 314);
+            this.groupBoxSetDB.Size = new System.Drawing.Size(555, 337);
             this.groupBoxSetDB.TabIndex = 14;
             this.groupBoxSetDB.TabStop = false;
-            this.groupBoxSetDB.Text = "Nastavení DB";
+            this.groupBoxSetDB.Text = " DB Settings";
             // 
-            // checkBox1
+            // textBoxPort
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(43, 554);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(113, 24);
-            this.checkBox1.TabIndex = 15;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.textBoxPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxPort.Location = new System.Drawing.Point(193, 301);
+            this.textBoxPort.Name = "textBoxPort";
+            this.textBoxPort.Size = new System.Drawing.Size(175, 30);
+            this.textBoxPort.TabIndex = 11;
+            this.textBoxPort.Text = "3306";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(22, 301);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(38, 20);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "Port";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
+            // checkBoxService
+            // 
+            this.checkBoxService.AutoSize = true;
+            this.checkBoxService.Location = new System.Drawing.Point(820, 579);
+            this.checkBoxService.Name = "checkBoxService";
+            this.checkBoxService.Size = new System.Drawing.Size(113, 24);
+            this.checkBoxService.TabIndex = 15;
+            this.checkBoxService.Text = "checkBox1";
+            this.checkBoxService.UseVisualStyleBackColor = true;
+            this.checkBoxService.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // groupBoxOutput
             // 
+            this.groupBoxOutput.Controls.Add(this.checkBoxAutoName);
             this.groupBoxOutput.Controls.Add(this.label5);
             this.groupBoxOutput.Controls.Add(this.textBoxName);
             this.groupBoxOutput.Controls.Add(this.textBoxVystup);
@@ -225,39 +252,21 @@ namespace DB_to_CSV
             this.groupBoxOutput.Controls.Add(this.buttonFileBrowser);
             this.groupBoxOutput.Location = new System.Drawing.Point(617, 36);
             this.groupBoxOutput.Name = "groupBoxOutput";
-            this.groupBoxOutput.Size = new System.Drawing.Size(438, 221);
+            this.groupBoxOutput.Size = new System.Drawing.Size(438, 251);
             this.groupBoxOutput.TabIndex = 16;
             this.groupBoxOutput.TabStop = false;
             this.groupBoxOutput.Text = "Output settings";
             // 
-            // groupBox1
+            // checkBoxAutoName
             // 
-            this.groupBox1.Controls.Add(this.textBoxSelect);
-            this.groupBox1.Location = new System.Drawing.Point(34, 387);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1048, 146);
-            this.groupBox1.TabIndex = 17;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Příkaz";
-            // 
-            // textBoxSelect
-            // 
-            this.textBoxSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxSelect.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.textBoxSelect.Location = new System.Drawing.Point(32, 41);
-            this.textBoxSelect.Multiline = true;
-            this.textBoxSelect.Name = "textBoxSelect";
-            this.textBoxSelect.Size = new System.Drawing.Size(989, 79);
-            this.textBoxSelect.TabIndex = 12;
-            this.textBoxSelect.Text = "Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit\r\nFrom Process" +
-    "Data\r\nWhere SerialNumber=\'40000557220810 \' OR SerialNumber=\'40000559220810\'";
-            // 
-            // textBoxName
-            // 
-            this.textBoxName.Location = new System.Drawing.Point(138, 157);
-            this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(212, 26);
-            this.textBoxName.TabIndex = 14;
+            this.checkBoxAutoName.AutoSize = true;
+            this.checkBoxAutoName.Location = new System.Drawing.Point(138, 199);
+            this.checkBoxAutoName.Name = "checkBoxAutoName";
+            this.checkBoxAutoName.Size = new System.Drawing.Size(234, 24);
+            this.checkBoxAutoName.TabIndex = 16;
+            this.checkBoxAutoName.Text = "autoName dle názvu tabulky";
+            this.checkBoxAutoName.UseVisualStyleBackColor = true;
+            this.checkBoxAutoName.CheckedChanged += new System.EventHandler(this.checkBoxAutoName_CheckedChanged);
             // 
             // label5
             // 
@@ -268,15 +277,54 @@ namespace DB_to_CSV
             this.label5.TabIndex = 15;
             this.label5.Text = "Název csv:";
             // 
+            // textBoxName
+            // 
+            this.textBoxName.Location = new System.Drawing.Point(138, 157);
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.Size = new System.Drawing.Size(212, 26);
+            this.textBoxName.TabIndex = 14;
+            this.textBoxName.Text = "abc";
+            this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
+            // 
+            // groupBoxPrikaz
+            // 
+            this.groupBoxPrikaz.Controls.Add(this.textBoxSelect);
+            this.groupBoxPrikaz.Location = new System.Drawing.Point(24, 397);
+            this.groupBoxPrikaz.Name = "groupBoxPrikaz";
+            this.groupBoxPrikaz.Size = new System.Drawing.Size(1048, 146);
+            this.groupBoxPrikaz.TabIndex = 17;
+            this.groupBoxPrikaz.TabStop = false;
+            this.groupBoxPrikaz.Text = "Command";
+            // 
+            // textBoxSelect
+            // 
+            this.textBoxSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxSelect.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.textBoxSelect.Location = new System.Drawing.Point(32, 41);
+            this.textBoxSelect.Multiline = true;
+            this.textBoxSelect.Name = "textBoxSelect";
+            this.textBoxSelect.Size = new System.Drawing.Size(989, 79);
+            this.textBoxSelect.TabIndex = 12;
+            this.textBoxSelect.Text = "SELECT * FROM uut_result\r\n";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 300;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1227, 612);
-            this.Controls.Add(this.groupBox1);
+            this.BackColor = System.Drawing.Color.Ivory;
+            this.ClientSize = new System.Drawing.Size(1227, 640);
+            this.Controls.Add(this.groupBoxPrikaz);
             this.Controls.Add(this.groupBoxOutput);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.checkBoxService);
             this.Controls.Add(this.groupBoxSetDB);
+            this.Controls.Add(this.buttonStart);
+            this.DoubleBuffered = true;
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -284,8 +332,8 @@ namespace DB_to_CSV
             this.groupBoxSetDB.PerformLayout();
             this.groupBoxOutput.ResumeLayout(false);
             this.groupBoxOutput.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.groupBoxPrikaz.ResumeLayout(false);
+            this.groupBoxPrikaz.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -303,18 +351,22 @@ namespace DB_to_CSV
         private System.Windows.Forms.TextBox textBoxDbName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBoxIS;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button buttonFileBrowser;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxVystup;
         private System.Windows.Forms.GroupBox groupBoxSetDB;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxService;
         private System.Windows.Forms.GroupBox groupBoxOutput;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBoxPrikaz;
         private System.Windows.Forms.TextBox textBoxSelect;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxName;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TextBox textBoxPort;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBoxAutoName;
     }
 }
 
