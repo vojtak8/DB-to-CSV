@@ -22,8 +22,37 @@ namespace DB_to_CSV
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            CheckBoxChecked();
-            
+            GetSettings();
+            CheckBoxChecked();            
+        }
+
+        private void GetSettings()
+        {
+            textBoxNastaveniDB.Text = Properties.sett.Default.NastaveniDB;
+            textBoxDbName.Text = Properties.sett.Default.DBName;
+            textBoxUsername.Text = Properties.sett.Default.Username;
+            textBoxPassw.Text = Properties.sett.Default.Password;
+            textBoxVystup.Text = Properties.sett.Default.location;
+            textBoxName.Text = Properties.sett.Default.nazevCSV;
+            textBoxPort.Text = Properties.sett.Default.port;
+            textBoxSelect.Text = Properties.sett.Default.command;
+            checkBoxService.Checked = Properties.sett.Default.service;
+
+        }
+        private void SaveSettings()
+        {
+            Properties.sett.Default.NastaveniDB = textBoxNastaveniDB.Text;
+            Properties.sett.Default.DBName = textBoxDbName.Text;
+            Properties.sett.Default.Username = textBoxUsername.Text;
+            Properties.sett.Default.Password = textBoxPassw.Text;
+            Properties.sett.Default.location = textBoxVystup.Text;
+            Properties.sett.Default.nazevCSV = textBoxName.Text;
+            Properties.sett.Default.port = textBoxPort.Text;
+            Properties.sett.Default.command = textBoxSelect.Text;
+            Properties.sett.Default.service = checkBoxService.Checked;
+
+            Properties.sett.Default.Save();
+
         }
         private string GetCSV()
         {
@@ -31,16 +60,15 @@ namespace DB_to_CSV
             {
                 try
                 {
-                    cn.Open();                  
+                    cn.Open();
                 }
                 catch (Exception)
                 {
-
                     MessageBox.Show("nepodařilo se navázat spojení");
-                    throw;
+                    
                 }
-                string cmd = textBoxSelect.Text;
-                //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
+                string cmd = textBoxSelect.Text; //command query
+                                                    //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
 
                 return CreateCSV(new MySqlCommand(cmd, cn).ExecuteReader());
             }
@@ -56,55 +84,65 @@ namespace DB_to_CSV
 
                 if (checkBoxAutoName.Checked)
                 {
-                    string myString = textBoxSelect.Text;
-                    string toBeSearched = "FROM ";
-                    int ix = myString.IndexOf(toBeSearched);
+                    string nazevSouboru = SelectCheck(); //vezme název pro csv z sql commandu
 
-                    if (ix != -1)
+                    if (nazevSouboru != null)
                     {
-                        string nazevSouboru = myString.Substring(ix + toBeSearched.Length);
-                        soubor = textBoxVystup.Text + @"\" + nazevSouboru + ".csv";
-                    }
-                    else
-                    {
-                        MessageBox.Show("SELECT command has to contain FROM [name of table]");
-                    }
+                        soubor = textBoxVystup.Text + @"\" + nazevSouboru + ".csv";      
+                    }                                              
                 }
                 else if (checkBoxAutoName.Checked != true)
                 {
-                    soubor = textBoxVystup.Text + @"\" + textBoxName.Text + ".csv";
+                    soubor = textBoxVystup.Text + @"\" + textBoxName.Text + ".csv"; // example of output C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
                 }
-                //C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
+                if (CheckBoxChecked() == false) 
+                {
                 MessageBox.Show(Convert.ToString(soubor));
-                if (reader.Read())
-                {
-                    string[] sloupce = new string[reader.FieldCount];
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        sloupce[i] = reader.GetName(i);
-                    }
-                    hlavicka = string.Join(";", sloupce);
-                    radky.Add(hlavicka);
-                }
-                while (reader.Read()) //dostane data
-                {
-                    object[] hodnoty = new object[reader.FieldCount];
-                    reader.GetValues(hodnoty);
-                    radky.Add(string.Join(";", hodnoty));
                 }
 
                 try
                 {
-                    File.WriteAllLines(soubor, radky);                   
+                    if (reader.Read())
+                    {
+                        string[] sloupce = new string[reader.FieldCount];
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            sloupce[i] = reader.GetName(i);
+                        }
+                        hlavicka = string.Join(";", sloupce);
+                        radky.Add(hlavicka);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v zápisu sloupců a jejich názvů \r\n \r\n {ex.Message}");
+                   
+                }
+                try
+                {
+                    while (reader.Read()) //dostane data
+                    {
+                        object[] hodnoty = new object[reader.FieldCount];
+                        reader.GetValues(hodnoty);
+                        radky.Add(string.Join(";", hodnoty));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v zápisu řádků do CSV \r\n \r\n {ex.Message}");
+                    throw;
+                }
+                try
+                {
+                    File.WriteAllLines(soubor, radky);
                     return soubor;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Close the .csv" + "\n" + e.Message);
+                    MessageBox.Show($"Close the .csv \r\n \r\n {ex.Message}");
                     return null;
                 }
-            
-            
+
             }
             else
             {
@@ -130,8 +168,9 @@ namespace DB_to_CSV
             {
                 //return "Server=192.168.225.136;Database=MySQL_DB_ForTSx64;Uid=myUsername;Pwd=MySQL4TS;Encrypt=true;";
                 //return "Server=" + a + e + "Database=" + b + e + "Integrated Security=false" + e + "User ID=" + c + e + "Password=" + d + e;
-                return "Server=" + a + e +/*"Port=" + f + e +*/ "Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e + "default command timeout=0" + e;
+                return "Server=" + a + e +/*"Port=" + f + e +*/ "Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e + "default command timeout=60" + e + "Connection Timeout=60" + e;
             }
+
         }
 
         private void checkBoxIS_CheckedChanged(object sender, EventArgs e)
@@ -146,6 +185,24 @@ namespace DB_to_CSV
                 textBoxUsername.Enabled = true;
                 textBoxPassw.Enabled = true;
             }
+        }
+
+        private string SelectCheck()
+        {
+            string myString = textBoxSelect.Text;
+            string toBeSearched = "FROM";
+            int ix = myString.IndexOf(toBeSearched);
+
+                    if (ix != -1)
+                    {
+                        string nazevSouboru = myString.Substring(ix + toBeSearched.Length);
+                        return nazevSouboru;
+                    }
+                    else
+                    {
+                       MessageBox.Show("SELECT command has to contain FROM [name of table]");
+                       return null;
+            }         
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -165,7 +222,7 @@ namespace DB_to_CSV
 
                 string strFilePath = fInfo.DirectoryName;
 
-                MessageBox.Show("Vybraná cesta:" + strFilePath);
+                MessageBox.Show("Vybraná cesta:" + "\n" + strFilePath);
 
                 textBoxVystup.Text = Convert.ToString(fInfo);
             }
@@ -187,14 +244,15 @@ namespace DB_to_CSV
         //jhv
         //2708
         //
-        private void CheckBoxChecked()
+        private bool CheckBoxChecked()
         {
             if (checkBoxService.Checked)
             {
                 checkBoxService.Text = "Service running";
                 groupBoxSetDB.Enabled = false;
                 groupBoxOutput.Enabled = false;
-                groupBoxPrikaz.Enabled = false;               
+                groupBoxPrikaz.Enabled = false;
+                return true;
 
             }
             else
@@ -203,20 +261,24 @@ namespace DB_to_CSV
                 groupBoxSetDB.Enabled = true;
                 groupBoxOutput.Enabled = true;
                 groupBoxPrikaz.Enabled = true;
+                return false;
             }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             CheckBoxChecked();
+            if (checkBoxService.Checked)
+            {
+                timer1.Enabled = true;
+                GetCSV();
+
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (checkBoxService.Checked)
-            {
-                GetCSV();
-            }
+        {         
+
         }
 
         private void label6_Click(object sender, EventArgs e)
@@ -240,6 +302,27 @@ namespace DB_to_CSV
                 textBoxName.Enabled = true;
             }
             
+        }
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+             String S = SelectCheck();
+            MessageBox.Show(S);
+        }
+
+        private void textBoxDbName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+           
         }
     }
 }

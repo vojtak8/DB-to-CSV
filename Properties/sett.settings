@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DB_to_CSV.Properties" GeneratedClassName="sett">
+  <Profiles />
+  <Settings>
+    <Setting Name="NastaveniDB" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.225.136</Value>
+    </Setting>
+    <Setting Name="DBName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">valeo_prod_db</Value>
+    </Setting>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MySQL4LV</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">LV_User</Value>
+    </Setting>
+    <Setting Name="location" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\NIAdminFCEOL\Desktop\CSV</Value>
+    </Setting>
+    <Setting Name="nazevCSV" Type="System.String" Scope="User">
+      <Value Profile="(Default)">abc</Value>
+    </Setting>
+    <Setting Name="port" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3306</Value>
+    </Setting>
+    <Setting Name="command" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SELECT * FROM uut_result</Value>
+    </Setting>
+    <Setting Name="service" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

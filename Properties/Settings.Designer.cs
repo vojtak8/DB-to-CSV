@@ -25,5 +25,12 @@ namespace DB_to_CSV.Properties
                 return defaultInstance;
             }
         }
+
+        public string NastaveniDB { get; internal set; }
+        public string DBName { get; internal set; }
+        public string Username { get; internal set; }
+        public string Password { get; internal set; }
+        public string nazevSCV { get; internal set; }
+        public string port { get; internal set; }
     }
 }
