@@ -65,15 +65,20 @@ namespace DB_to_CSV
                 catch (Exception)
                 {
                     MessageBox.Show("nepodařilo se navázat spojení");
+                    cn.Close();
                     
                 }
                 string cmd = textBoxSelect.Text; //command query
-                                                    //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
+                                                 //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
 
                 return CreateCSV(new MySqlCommand(cmd, cn).ExecuteReader());
             }
         }
-        private string CreateCSV(IDataReader reader) //vytvoří CSV file
+        private string CreateCSV(IDataReader reader)
+        {
+            return CreateCSV(reader, string.Empty);
+        }
+        private string CreateCSV(IDataReader reader, string extention) //vytvoří CSV file
         {
             string hlavicka = "";
             string soubor = ""; //umístění
@@ -88,12 +93,12 @@ namespace DB_to_CSV
 
                     if (nazevSouboru != null)
                     {
-                        soubor = textBoxVystup.Text + @"\" + nazevSouboru + ".csv";      
+                        soubor = textBoxVystup.Text + @"\" + nazevSouboru + extention + ".csv";      
                     }                                              
                 }
                 else if (checkBoxAutoName.Checked != true)
                 {
-                    soubor = textBoxVystup.Text + @"\" + textBoxName.Text + ".csv"; // example of output C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
+                    soubor = textBoxVystup.Text + @"\" + textBoxName.Text + extention + ".csv"; // example of output C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
                 }
                 if (CheckBoxChecked() == false) 
                 {
@@ -142,7 +147,6 @@ namespace DB_to_CSV
                     MessageBox.Show($"Close the .csv \r\n \r\n {ex.Message}");
                     return null;
                 }
-
             }
             else
             {
@@ -268,10 +272,47 @@ namespace DB_to_CSV
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             CheckBoxChecked();
+            
             if (checkBoxService.Checked)
             {
-                timer1.Enabled = true;
-                GetCSV();
+                if (string.IsNullOrEmpty(textBoxVystup.Text))
+                {
+                    string s = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                    textBoxVystup.Text = s;
+                    DialogResult dialogResult = MessageBox.Show("Chcete nastavit umístění:" + s, "Nezadané umístění pro csv", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        textBoxVystup.Text = s;
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        MessageBox.Show("Vyberte svoje vlastní v nastavení umístění.");
+                    }
+                }
+                try
+                {
+                    textBoxSelect.Text = "";
+                    textBoxSelect.Text = "SELECT * FROM prop_analogwaveform";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM prop_binary";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM prop_digitalwaveform";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM prop_numericlimit";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM prop_result";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM step_result";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM step_seqcall";
+                    GetCSV();
+                    textBoxSelect.Text = "SELECT * FROM uut_result"; //bude default při otevření aplikace
+                    GetCSV();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v průběhu služby \r\n \r\n {ex.Message}");
+                }
 
             }
         }
@@ -306,8 +347,9 @@ namespace DB_to_CSV
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-             String S = SelectCheck();
-            MessageBox.Show(S);
+            string s = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            String S = SelectCheck();
+            MessageBox.Show(S + s);
         }
 
         private void textBoxDbName_TextChanged(object sender, EventArgs e)
@@ -323,6 +365,33 @@ namespace DB_to_CSV
         private void label7_Click(object sender, EventArgs e)
         {
            
+        }
+        private void Bulk()
+        {
+            MySqlConnection conn = new MySqlConnection(GetConnectionString());
+            for (int i = 0; i < 4; i++)
+            {
+                try
+                {
+                    conn.Open();
+                    var datum = "1/1/";
+                    var stringCommand = $"SELECT * FROM STEP_RESULT WHERE START_DATE_TIME >= {datum + (2019 + i).ToString()} AND START_DATE_TIME < {datum + (2020 + i).ToString()}";
+                    var command = new MySqlCommand(stringCommand, conn);
+
+                    var reader = command.ExecuteReader();
+
+                    CreateCSV(reader, (2019 + i).ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v zápisu \r\n \r\n {ex.Message}");
+                }
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            Bulk();
         }
     }
 }

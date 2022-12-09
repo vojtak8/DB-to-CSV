@@ -50,6 +50,7 @@ namespace DB_to_CSV
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxService = new System.Windows.Forms.CheckBox();
             this.groupBoxOutput = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.checkBoxAutoName = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
@@ -57,7 +58,7 @@ namespace DB_to_CSV
             this.textBoxSelect = new System.Windows.Forms.TextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.buttonTest = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBoxSetDB.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
             this.groupBoxPrikaz.SuspendLayout();
@@ -276,6 +277,17 @@ namespace DB_to_CSV
             this.groupBoxOutput.TabStop = false;
             this.groupBoxOutput.Text = "Output settings";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(239, 105);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(27, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = ".csv";
+            this.label7.Click += new System.EventHandler(this.label7_Click);
+            // 
             // checkBoxAutoName
             // 
             this.checkBoxAutoName.AutoSize = true;
@@ -337,7 +349,7 @@ namespace DB_to_CSV
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(338, 376);
+            this.buttonTest.Location = new System.Drawing.Point(333, 370);
             this.buttonTest.Name = "buttonTest";
             this.buttonTest.Size = new System.Drawing.Size(75, 23);
             this.buttonTest.TabIndex = 18;
@@ -345,16 +357,15 @@ namespace DB_to_CSV
             this.buttonTest.UseVisualStyleBackColor = true;
             this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
             // 
-            // label7
+            // button1
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(239, 105);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(27, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = ".csv";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
+            this.button1.Location = new System.Drawing.Point(425, 370);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // Form1
             // 
@@ -362,6 +373,7 @@ namespace DB_to_CSV
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Ivory;
             this.ClientSize = new System.Drawing.Size(818, 416);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.groupBoxPrikaz);
             this.Controls.Add(this.groupBoxOutput);
@@ -416,6 +428,7 @@ namespace DB_to_CSV
         private System.Windows.Forms.CheckBox checkBoxAutoName;
         private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button1;
     }
 }
 
