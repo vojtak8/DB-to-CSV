@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -166,13 +167,13 @@ namespace DB_to_CSV
 
             if (checkBoxIS.Checked)
             {
-                return "Server=" + a + e + "Database=" + b + e + "Integrated Security=true" + e;
+                return "Provider=MSDASQL.1;Password=MySQL4LV;Persist Security Info=True;User ID=LV_User;Data Source=MySQL_DB_ForLVx64";
             }
             else
             {
                 //return "Server=192.168.225.136;Database=MySQL_DB_ForTSx64;Uid=myUsername;Pwd=MySQL4TS;Encrypt=true;";
                 //return "Server=" + a + e + "Database=" + b + e + "Integrated Security=false" + e + "User ID=" + c + e + "Password=" + d + e;
-                return "Server=" + a + e +/*"Port=" + f + e +*/ "Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e + "default command timeout=60" + e + "Connection Timeout=60" + e;
+                return "Server=" + a + e + "Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e;
             }
 
         }
@@ -199,8 +200,10 @@ namespace DB_to_CSV
 
                     if (ix != -1)
                     {
-                        string nazevSouboru = myString.Substring(ix + toBeSearched.Length);
-                        return nazevSouboru;
+                        string nazevSouboru = myString.Substring(ix + toBeSearched.Length + 1);
+                        var z = nazevSouboru.Split(' ')[0];
+
+                return z;
                     }
                     else
                     {
@@ -253,9 +256,11 @@ namespace DB_to_CSV
             if (checkBoxService.Checked)
             {
                 checkBoxService.Text = "Service running";
+                checkBoxAutoName.Checked = true;
                 groupBoxSetDB.Enabled = false;
                 groupBoxOutput.Enabled = false;
                 groupBoxPrikaz.Enabled = false;
+                buttonStart.Enabled = false;
                 return true;
 
             }
@@ -265,6 +270,7 @@ namespace DB_to_CSV
                 groupBoxSetDB.Enabled = true;
                 groupBoxOutput.Enabled = true;
                 groupBoxPrikaz.Enabled = true;
+                buttonStart.Enabled = true;
                 return false;
             }
         }
@@ -308,6 +314,7 @@ namespace DB_to_CSV
                     GetCSV();
                     textBoxSelect.Text = "SELECT * FROM uut_result"; //bude default při otevření aplikace
                     GetCSV();
+                    MessageBox.Show("Záloha do .csv proběhla");
                 }
                 catch (Exception ex)
                 {
@@ -348,8 +355,8 @@ namespace DB_to_CSV
         private void buttonTest_Click(object sender, EventArgs e)
         {
             string s = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            String S = SelectCheck();
-            MessageBox.Show(S + s);
+            String Z = SelectCheck();
+            MessageBox.Show(Z + s);
         }
 
         private void textBoxDbName_TextChanged(object sender, EventArgs e)
@@ -375,7 +382,7 @@ namespace DB_to_CSV
                 {
                     conn.Open();
                     var datum = "1/1/";
-                    var stringCommand = $"SELECT * FROM STEP_RESULT WHERE START_DATE_TIME >= {datum + (2019 + i).ToString()} AND START_DATE_TIME < {datum + (2020 + i).ToString()}";
+                    var stringCommand = $"SELECT * FROM prop_numericlimit WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
                     var command = new MySqlCommand(stringCommand, conn);
 
                     var reader = command.ExecuteReader();
@@ -384,7 +391,61 @@ namespace DB_to_CSV
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Chyba v zápisu \r\n \r\n {ex.Message}");
+                    MessageBox.Show($"Chyba v zápisu prop_numericlimit \r\n \r\n {ex.Message}");
+                }
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                try
+                {
+                    conn.Open();
+                    var datum = "1/1/";
+                    var stringCommand = $"SELECT * FROM prop_result WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
+                    var command = new MySqlCommand(stringCommand, conn);
+
+                    var reader = command.ExecuteReader();
+
+                    CreateCSV(reader, (2019 + i).ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v zápisu prop_result \r\n \r\n {ex.Message}");
+                }
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                try
+                {
+                    conn.Open();
+                    var datum = "1/1/";
+                    var stringCommand = $"SELECT * FROM step_result WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
+                    var command = new MySqlCommand(stringCommand, conn);
+
+                    var reader = command.ExecuteReader();
+
+                    CreateCSV(reader, (2019 + i).ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v zápisu step_result \r\n \r\n {ex.Message}");
+                }
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                try
+                {
+                    conn.Open();
+                    var datum = "1/1/";
+                    var stringCommand = $"SELECT * FROM step_seqcall WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
+                    var command = new MySqlCommand(stringCommand, conn);
+
+                    var reader = command.ExecuteReader();
+
+                    CreateCSV(reader, (2019 + i).ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba v zápisu step_seqcall \r\n \r\n {ex.Message}");
                 }
             }
         }

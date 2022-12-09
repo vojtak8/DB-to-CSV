@@ -57,8 +57,6 @@ namespace DB_to_CSV
             this.groupBoxPrikaz = new System.Windows.Forms.GroupBox();
             this.textBoxSelect = new System.Windows.Forms.TextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.buttonTest = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBoxSetDB.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
             this.groupBoxPrikaz.SuspendLayout();
@@ -347,34 +345,12 @@ namespace DB_to_CSV
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // buttonTest
-            // 
-            this.buttonTest.Location = new System.Drawing.Point(333, 370);
-            this.buttonTest.Name = "buttonTest";
-            this.buttonTest.Size = new System.Drawing.Size(75, 23);
-            this.buttonTest.TabIndex = 18;
-            this.buttonTest.Text = "buttonTest";
-            this.buttonTest.UseVisualStyleBackColor = true;
-            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(425, 370);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Ivory;
             this.ClientSize = new System.Drawing.Size(818, 416);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.groupBoxPrikaz);
             this.Controls.Add(this.groupBoxOutput);
             this.Controls.Add(this.checkBoxService);
@@ -426,9 +402,7 @@ namespace DB_to_CSV
         private System.Windows.Forms.TextBox textBoxPort;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBoxAutoName;
-        private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button1;
     }
 }
 
