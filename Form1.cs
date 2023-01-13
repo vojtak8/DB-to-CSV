@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace DB_to_CSV
 {
@@ -24,7 +25,7 @@ namespace DB_to_CSV
         private void Form1_Load(object sender, EventArgs e)
         {
             GetSettings();
-            CheckBoxChecked();            
+            CheckBoxChecked();
         }
 
         private void GetSettings()
@@ -38,6 +39,8 @@ namespace DB_to_CSV
             textBoxPort.Text = Properties.sett.Default.port;
             textBoxSelect.Text = Properties.sett.Default.command;
             checkBoxService.Checked = Properties.sett.Default.service;
+            textBoxPrikazy.Text = Properties.sett.Default.jsoncesta;
+            checkBoxPrikazy.Checked = Properties.sett.Default.autoCMD;
 
         }
         private void SaveSettings()
@@ -51,35 +54,44 @@ namespace DB_to_CSV
             Properties.sett.Default.port = textBoxPort.Text;
             Properties.sett.Default.command = textBoxSelect.Text;
             Properties.sett.Default.service = checkBoxService.Checked;
+            Properties.sett.Default.jsoncesta = textBoxPrikazy.Text;
+            Properties.sett.Default.autoCMD = checkBoxPrikazy.Checked;
 
             Properties.sett.Default.Save();
 
         }
         private string GetCSV()
         {
-            using (MySqlConnection cn = new MySqlConnection(GetConnectionString()))
+            if (textBoxDbName.TextLength != 0 && //ověří zadání údajů, heslo a jméno jsou kontrolovány poté
+                textBoxNastaveniDB.TextLength != 0 &&
+                textBoxPort.TextLength != 0 )
             {
-                try
+                using (MySqlConnection cn = new MySqlConnection(GetConnectionString()))
                 {
-                    cn.Open();
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("nepodařilo se navázat spojení");
-                    cn.Close();
-                    
-                }
-                string cmd = textBoxSelect.Text; //command query
-                                                 //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
+                    try
+                    {
+                        cn.Open();
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("nepodařilo se navázat spojení, zkontroluj údaje");
+                        cn.Close();                        
 
-                return CreateCSV(new MySqlCommand(cmd, cn).ExecuteReader());
+                    }
+                    string cmd = textBoxSelect.Text; //command query
+                                                     //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
+
+                    return CreateCSV(new MySqlCommand(cmd, cn).ExecuteReader());
+                }
+            }
+            else
+            {
+                MessageBox.Show("Vyplňte všechny údaje potřebné k připojení");
+                return null;
             }
         }
-        private string CreateCSV(IDataReader reader)
-        {
-            return CreateCSV(reader, string.Empty);
-        }
-        private string CreateCSV(IDataReader reader, string extention) //vytvoří CSV file
+
+        private string CreateCSV(IDataReader reader) //vytvoří CSV file
         {
             string hlavicka = "";
             string soubor = ""; //umístění
@@ -94,16 +106,16 @@ namespace DB_to_CSV
 
                     if (nazevSouboru != null)
                     {
-                        soubor = textBoxVystup.Text + @"\" + nazevSouboru + extention + ".csv";      
-                    }                                              
+                        soubor = textBoxVystup.Text + @"\" + nazevSouboru + ".csv";
+                    }
                 }
                 else if (checkBoxAutoName.Checked != true)
                 {
-                    soubor = textBoxVystup.Text + @"\" + textBoxName.Text + extention + ".csv"; // example of output C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
+                    soubor = textBoxVystup.Text + @"\" + textBoxName.Text + ".csv"; // example of output C:\\Users\vpivonka\Desktop\VS Projekty\test.csv
                 }
-                if (CheckBoxChecked() == false) 
+                if (CheckBoxChecked() == false)
                 {
-                MessageBox.Show(Convert.ToString(soubor));
+                    MessageBox.Show(Convert.ToString(soubor));
                 }
 
                 try
@@ -122,7 +134,7 @@ namespace DB_to_CSV
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Chyba v zápisu sloupců a jejich názvů \r\n \r\n {ex.Message}");
-                   
+
                 }
                 try
                 {
@@ -167,13 +179,13 @@ namespace DB_to_CSV
 
             if (checkBoxIS.Checked)
             {
-                return "Provider=MSDASQL.1;Password=MySQL4LV;Persist Security Info=True;User ID=LV_User;Data Source=MySQL_DB_ForLVx64";
+                return "Server=" + a + e + "Port=" + f + e + "Database=" + b + e + "Persist Security Info = True;" ;
             }
             else
             {
                 //return "Server=192.168.225.136;Database=MySQL_DB_ForTSx64;Uid=myUsername;Pwd=MySQL4TS;Encrypt=true;";
                 //return "Server=" + a + e + "Database=" + b + e + "Integrated Security=false" + e + "User ID=" + c + e + "Password=" + d + e;
-                return "Server=" + a + e + "Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e;
+                return "Server=" + a + e + "Port=" + f + e +"Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e;
             }
 
         }
@@ -198,23 +210,38 @@ namespace DB_to_CSV
             string toBeSearched = "FROM";
             int ix = myString.IndexOf(toBeSearched);
 
-                    if (ix != -1)
-                    {
-                        string nazevSouboru = myString.Substring(ix + toBeSearched.Length + 1);
-                        var z = nazevSouboru.Split(' ')[0];
+            if (ix != -1)
+            {
+                string nazevSouboru = myString.Substring(ix + toBeSearched.Length + 1);
+                var z = nazevSouboru.Split(' ')[0];
 
                 return z;
-                    }
-                    else
-                    {
-                       MessageBox.Show("SELECT command has to contain FROM [name of table]");
-                       return null;
-            }         
+            }
+            else
+            {
+                MessageBox.Show("SELECT command has to contain FROM [name of table]");
+                return null;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetCSV();
+            if (checkBoxPrikazy.Checked && checkBoxAutoName.Checked)
+            {
+                foreachJson();
+            }
+            else if (textBoxName.Text.Length != 0 && checkBoxAutoName.Checked == false)
+            {
+                GetCSV();
+            }
+            else if (textBoxName.Text.Length == 0 && checkBoxAutoName.Checked == false)
+            {
+                MessageBox.Show("Vyplňte název csv souboru nebo zapnete autoName");
+            }
+            else if (checkBoxAutoName.Checked == true && textBoxName.TextLength == 0)
+            {
+                GetCSV();
+            }
         }
 
         private void buttonFileBrowser_Click(object sender, EventArgs e)
@@ -278,54 +305,71 @@ namespace DB_to_CSV
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             CheckBoxChecked();
-            
+
             if (checkBoxService.Checked)
             {
-                if (string.IsNullOrEmpty(textBoxVystup.Text))
+                if (checkBoxPrikazy.Checked)
                 {
-                    string s = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                    textBoxVystup.Text = s;
-                    DialogResult dialogResult = MessageBox.Show("Chcete nastavit umístění:" + s, "Nezadané umístění pro csv", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
+                    if (string.IsNullOrEmpty(textBoxVystup.Text))
                     {
+                        string s = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                         textBoxVystup.Text = s;
+                        DialogResult dialogResult = MessageBox.Show("Chcete nastavit umístění:" + s, "Nezadané umístění pro csv", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            textBoxVystup.Text = s;
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            MessageBox.Show("Vyberte svoje vlastní v nastavení umístění.");
+                        }
                     }
-                    else if (dialogResult == DialogResult.No)
+                    else if (textBoxPrikazy.Text.Length != 0)
                     {
-                        MessageBox.Show("Vyberte svoje vlastní v nastavení umístění.");
+                        checkBoxAutoName.Checked = true;
+                        foreachJson();
                     }
                 }
-                try
+                else
                 {
-                    textBoxSelect.Text = "";
-                    textBoxSelect.Text = "SELECT * FROM prop_analogwaveform";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM prop_binary";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM prop_digitalwaveform";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM prop_numericlimit";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM prop_result";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM step_result";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM step_seqcall";
-                    GetCSV();
-                    textBoxSelect.Text = "SELECT * FROM uut_result"; //bude default při otevření aplikace
-                    GetCSV();
-                    MessageBox.Show("Záloha do .csv proběhla");
+                    MessageBox.Show("Nejdřív zvolte .json soubor s příkazy, abyste mohli zapnout running mode");
+                    checkBoxService.Checked = false;
+                    CheckBoxChecked();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Chyba v průběhu služby \r\n \r\n {ex.Message}");
-                }
-
             }
+        }
+        public class AutoClosingMessageBox
+        {
+            System.Threading.Timer _timeoutTimer;
+            string _caption;
+            AutoClosingMessageBox(string text, string caption, int timeout)
+            {
+                _caption = caption;
+                _timeoutTimer = new System.Threading.Timer(OnTimerElapsed,
+                    null, timeout, System.Threading.Timeout.Infinite);
+                using (_timeoutTimer)
+                    MessageBox.Show(text, caption);
+            }
+            public static void Show(string text, string caption, int timeout)
+            {
+                new AutoClosingMessageBox(text, caption, timeout);
+            }
+            void OnTimerElapsed(object state)
+            {
+                IntPtr mbWnd = FindWindow("#32770", _caption); // lpClassName is #32770 for MessageBox
+                if (mbWnd != IntPtr.Zero)
+                    SendMessage(mbWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                _timeoutTimer.Dispose();
+            }
+            const int WM_CLOSE = 0x0010;
+            [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+            static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+            [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+            static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
-        {         
+        {
 
         }
 
@@ -341,7 +385,7 @@ namespace DB_to_CSV
 
         private void checkBoxAutoName_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxAutoName.Checked )
+            if (checkBoxAutoName.Checked)
             {
                 textBoxName.Enabled = false;
             }
@@ -349,7 +393,7 @@ namespace DB_to_CSV
             {
                 textBoxName.Enabled = true;
             }
-            
+
         }
 
         private void buttonTest_Click(object sender, EventArgs e)
@@ -371,88 +415,157 @@ namespace DB_to_CSV
 
         private void label7_Click(object sender, EventArgs e)
         {
-           
-        }
-        private void Bulk()
-        {
-            MySqlConnection conn = new MySqlConnection(GetConnectionString());
-            for (int i = 0; i < 4; i++)
-            {
-                try
-                {
-                    conn.Open();
-                    var datum = "1/1/";
-                    var stringCommand = $"SELECT * FROM prop_numericlimit WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
-                    var command = new MySqlCommand(stringCommand, conn);
 
-                    var reader = command.ExecuteReader();
+        }     
 
-                    CreateCSV(reader, (2019 + i).ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Chyba v zápisu prop_numericlimit \r\n \r\n {ex.Message}");
-                }
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                try
-                {
-                    conn.Open();
-                    var datum = "1/1/";
-                    var stringCommand = $"SELECT * FROM prop_result WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
-                    var command = new MySqlCommand(stringCommand, conn);
-
-                    var reader = command.ExecuteReader();
-
-                    CreateCSV(reader, (2019 + i).ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Chyba v zápisu prop_result \r\n \r\n {ex.Message}");
-                }
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                try
-                {
-                    conn.Open();
-                    var datum = "1/1/";
-                    var stringCommand = $"SELECT * FROM step_result WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
-                    var command = new MySqlCommand(stringCommand, conn);
-
-                    var reader = command.ExecuteReader();
-
-                    CreateCSV(reader, (2019 + i).ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Chyba v zápisu step_result \r\n \r\n {ex.Message}");
-                }
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                try
-                {
-                    conn.Open();
-                    var datum = "1/1/";
-                    var stringCommand = $"SELECT * FROM step_seqcall WHERE START_DATE_TIME >= CONVERT(datetime,'{datum + (2019 + i).ToString()}',22) AND START_DATE_TIME < CONVERT(datetime,'{datum + (2020 + i).ToString()}',22)";
-                    var command = new MySqlCommand(stringCommand, conn);
-
-                    var reader = command.ExecuteReader();
-
-                    CreateCSV(reader, (2019 + i).ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Chyba v zápisu step_seqcall \r\n \r\n {ex.Message}");
-                }
-            }
-        }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            Bulk();
+            string password = "valeo";
+            using (var form = new Form())
+            {
+                var label = new Label() { Text = "Zadejte heslo k editaci zdrojového souboru:", Left = 10, Top = 20, Width = 200 };
+                var textBox = new TextBox() { Left = 10, Top = 50, Width = 200 };
+                var buttonOk = new Button() { Text = "OK", Left = 10, Width = 100, Top = 80, DialogResult = DialogResult.OK };
+                var buttonCancel = new Button() { Text = "Cancel", Left = 110, Width = 100, Top = 80, DialogResult = DialogResult.Cancel };
+
+                form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+                form.AcceptButton = buttonOk;
+                form.CancelButton = buttonCancel;
+                form.StartPosition = FormStartPosition.CenterScreen;
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.MinimizeBox = false;
+                form.MaximizeBox = false;
+
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    if (textBox.Text == password)
+                    {
+                        // uzivatel zadal spravne heslo, takze se provede akce tlacitka                       
+                        string _jsonFilePath;
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        openFileDialog.Filter = "JSON files (*.json)|*.json";
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            _jsonFilePath = openFileDialog.FileName;
+                            textBoxPrikazy.Text = Convert.ToString(_jsonFilePath);
+
+                        }
+                        else
+                        {
+                            _jsonFilePath = null;
+                            checkBoxPrikazy.Checked = false;
+                            MessageBox.Show("Musíte vybrat .json soubor!");
+                        }
+                    }
+                    else
+                    {
+                        // uzivatel zadal spatne heslo, takze se zobrazi chybova hlaska
+                        MessageBox.Show("Špatné heslo!");
+                    }
+                }
+            }
+        }
+    
+
+        private void checkBoxPrikazy_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxPrikazy.Checked)
+            {
+                if (textBoxPrikazy.TextLength != 0)
+                {
+                    textBoxSelect.Enabled = false;
+                    textBoxPrikazy.Enabled = false;
+                    buttonPrikazy.Enabled = false;
+                }
+            }
+            else
+            {
+                textBoxSelect.Enabled = true;
+                textBoxPrikazy.Enabled = true;
+                buttonPrikazy.Enabled = true;
+            }
+        }
+
+        private void foreachJson()
+        {
+            string jsonFilePath = textBoxPrikazy.Text;
+            string jsonText = File.ReadAllText(jsonFilePath);
+            var commands = JsonConvert.DeserializeObject<List<string>>(jsonText);
+            try
+            {
+                if (checkBoxService.Checked)
+                {
+
+                    foreach (var command in commands)
+                    {
+                        try
+                        {
+                            textBoxSelect.Text = command;
+                            GetCSV();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Chyba v čtení json souboru či příkazu \r\n \r\n {ex.Message}");
+            }
+        }
+
+
+        private void textBoxSelect_Click(object sender, EventArgs e)
+        {
+            string password = "valeo";
+            if (textBoxSelect.Text != "") // pokud je textbox neprázdný
+            {
+                using (var form = new Form())
+                {
+                    var label = new Label() { Text = "Zadejte heslo pro editaci:", Left = 10, Top = 20, Width = 200 };
+                    var textBox = new TextBox() { Left = 10, Top = 50, Width = 200 };
+                    var buttonOk = new Button() { Text = "OK", Left = 10, Width = 100, Top = 80, DialogResult = DialogResult.OK };
+                    var buttonCancel = new Button() { Text = "Cancel", Left = 110, Width = 100, Top = 80, DialogResult = DialogResult.Cancel };
+
+                    form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+                    form.AcceptButton = buttonOk;
+                    form.CancelButton = buttonCancel;
+                    form.StartPosition = FormStartPosition.CenterScreen;
+                    form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    form.MinimizeBox = false;
+                    form.MaximizeBox = false;
+
+                    var result = form.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        if (textBox.Text == password)
+                        {
+                            textBoxSelect.ReadOnly = false;
+                            // uzivatel zadal spravne heslo, takze muze editovat textbox
+                        }
+                        else
+                        {
+                            textBoxSelect.ReadOnly = true;
+                            MessageBox.Show("Špatné heslo, textbox je zamčen!");
+                        }
+                    }
+                    else
+                    {
+                        textBoxSelect.ReadOnly = true;
+                    }
+                }
+            }
+            else
+            {
+                textBoxSelect.ReadOnly = false;
+            }
         }
     }
-}
+    }

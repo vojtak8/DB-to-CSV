@@ -1,0 +1,10 @@
+﻿[
+  "SELECT * FROM prop_analogwaveform",
+  "SELECT * FROM prop_binary",
+  "SELECT * FROM prop_digitalwaveform",
+  "SELECT * FROM prop_numericlimit",
+  "SELECT * FROM prop_result",
+  "SELECT * FROM step_result",
+  "SELECT * FROM step_seqcall",
+  "SELECT * FROM uut_result"
+]

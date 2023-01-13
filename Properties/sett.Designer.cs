@@ -130,5 +130,29 @@ namespace DB_to_CSV.Properties {
                 this["service"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
+        public string jsoncesta {
+            get {
+                return ((string)(this["jsoncesta"]));
+            }
+            set {
+                this["jsoncesta"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoCMD {
+            get {
+                return ((bool)(this["autoCMD"]));
+            }
+            set {
+                this["autoCMD"] = value;
+            }
+        }
     }
 }
