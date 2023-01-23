@@ -62,7 +62,7 @@ namespace DB_to_CSV
         }
         private string GetCSV()
         {
-            if (textBoxDbName.TextLength != 0 && //ověří zadání údajů, heslo a jméno jsou kontrolovány poté
+            if (textBoxDbName.TextLength != 0 && //ověří zadání údajů, heslo a jméno jsou kontrolovány poté kvůli možnosti integrated security
                 textBoxNastaveniDB.TextLength != 0 &&
                 textBoxPort.TextLength != 0 )
             {
@@ -219,7 +219,7 @@ namespace DB_to_CSV
             }
             else
             {
-                MessageBox.Show("SELECT command has to contain FROM [name of table]");
+                MessageBox.Show("SELECT musí obsahovat FROM název tabulky.");
                 return null;
             }
         }
@@ -236,7 +236,7 @@ namespace DB_to_CSV
             }
             else if (textBoxName.Text.Length == 0 && checkBoxAutoName.Checked == false)
             {
-                MessageBox.Show("Vyplňte název csv souboru nebo zapnete autoName");
+                MessageBox.Show("Vyplňte název csv souboru nebo zapnete autoName.");
             }
             else if (checkBoxAutoName.Checked == true && textBoxName.TextLength == 0)
             {
@@ -424,7 +424,7 @@ namespace DB_to_CSV
             string password = "valeo";
             using (var form = new Form())
             {
-                var label = new Label() { Text = "Zadejte heslo k editaci zdrojového souboru:", Left = 10, Top = 20, Width = 200 };
+                var label = new Label() { Text = "Zadejte heslo k editaci souboru:", Left = 10, Top = 20, Width = 200 };
                 var textBox = new TextBox() { Left = 10, Top = 50, Width = 200 };
                 var buttonOk = new Button() { Text = "OK", Left = 10, Width = 100, Top = 80, DialogResult = DialogResult.OK };
                 var buttonCancel = new Button() { Text = "Cancel", Left = 110, Width = 100, Top = 80, DialogResult = DialogResult.Cancel };
