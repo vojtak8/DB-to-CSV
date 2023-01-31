@@ -9,13 +9,13 @@
       <Value Profile="(Default)">valeo_prod_db</Value>
     </Setting>
     <Setting Name="Username" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MySQL4LV</Value>
-    </Setting>
-    <Setting Name="Password" Type="System.String" Scope="User">
       <Value Profile="(Default)">LV_User</Value>
     </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MySQL4LV</Value>
+    </Setting>
     <Setting Name="location" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\NIAdminFCEOL\Desktop\CSV</Value>
+      <Value Profile="(Default)">C:\EOLT_Reports\CSV-SQL</Value>
     </Setting>
     <Setting Name="nazevCSV" Type="System.String" Scope="User">
       <Value Profile="(Default)">abc</Value>
@@ -30,7 +30,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="jsoncesta" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\</Value>
+      <Value Profile="(Default)">C:\Users\NIAdminFCEOL\Desktop\My-SQL-csv\Queries.json</Value>
     </Setting>
     <Setting Name="autoCMD" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

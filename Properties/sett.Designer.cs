@@ -49,7 +49,7 @@ namespace DB_to_CSV.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MySQL4LV")]
+        [global::System.Configuration.DefaultSettingValueAttribute("LV_User")]
         public string Username {
             get {
                 return ((string)(this["Username"]));
@@ -61,7 +61,7 @@ namespace DB_to_CSV.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("LV_User")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MySQL4LV")]
         public string Password {
             get {
                 return ((string)(this["Password"]));
@@ -73,7 +73,7 @@ namespace DB_to_CSV.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\NIAdminFCEOL\\Desktop\\CSV")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\EOLT_Reports\\CSV-SQL")]
         public string location {
             get {
                 return ((string)(this["location"]));
@@ -133,7 +133,7 @@ namespace DB_to_CSV.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\NIAdminFCEOL\\Desktop\\My-SQL-csv\\Queries.json")]
         public string jsoncesta {
             get {
                 return ((string)(this["jsoncesta"]));
