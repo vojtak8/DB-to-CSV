@@ -26,12 +26,12 @@ namespace DB_to_CSV
         private async void Form1_Load(object sender, EventArgs e)
         {
             GetSettings();
-            CheckBoxChecked();
-            await Task.Delay(TimeSpan.FromSeconds(20));
+            CheckBoxChecked();           
             try
             {
                 if (checkBoxService.Checked)
                 {
+                    await Task.Delay(TimeSpan.FromSeconds(20));
                     foreachJson();
                 }
             }
@@ -75,8 +75,6 @@ namespace DB_to_CSV
             Properties.sett.Default.Save();
 
         }
-        public static int rowsInTable = 0;
-        public static int rowsInFile = 0;
         private string GetCSV()
         {
             if (textBoxDbName.TextLength != 0 && //ověří zadání údajů, heslo a jméno jsou kontrolovány poté kvůli možnosti integrated security
@@ -89,15 +87,14 @@ namespace DB_to_CSV
                     {
                         cn.Open();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("nepodařilo se navázat spojení, zkontroluj údaje");
+                        MessageBox.Show($"nepodařilo se navázat spojení, zkontroluj údaje /n {ex.Message}");
                         cn.Close();                        
 
                     }
                     string cmd = textBoxSelect.Text; //command query
-                                                     //"Select TimeStampPC,Station,Status,PN,SerialNumber,WS250_DMX,Transit From ProcessData Where SerialNumber = '40437337220610'"
-
+                                                       
                     return CreateCSV(new MySqlCommand(cmd, cn).ExecuteReader());
                 }
             }
@@ -113,6 +110,7 @@ namespace DB_to_CSV
             string file = "";
             List<string> rows = new List<string>();
             int rowsInFile = 0;
+            int rowsInTable = CountRowsInTable();
 
             if (textBoxVystup.Text.Length != 0 && textBoxName.Text.Length != 0 && textBoxSelect.Text.Length != 0)
             {
@@ -177,8 +175,10 @@ namespace DB_to_CSV
                             rowsInFile++;
                         }                       
                     }
-                    int rowsInTable = CountRowsInTable();
-                    CompareRows(rowsInFile, rowsInTable);
+                    if (CompareRows(rowsInFile, rowsInTable) == true)
+                    {
+                      //ClearTable(); pro release odkomentovat
+                    }                   
                     return file;
                     
                 }                
@@ -203,44 +203,102 @@ namespace DB_to_CSV
                 using (MySqlCommand cmd = new MySqlCommand($"SELECT COUNT(*) FROM {tableName}", connection))
                 {
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
+
                     return count;
                 }
             }
         }
-        private void CompareRows(int rowsInFile, int rowsInTable)
+        private bool? CompareRows(int rowsInFile, int rowsInTable)
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string tableName = SelectCheck();
-            MessageBox.Show($"{rowsInFile} v tabulce {rowsInFile} v souboru");
             string reportFile = "report.txt"; // Zápis do souboru report 
-            string reportBadText = $"Počet řádků v tabulce {tableName} se nerovná. Počet řádků v CSV souboru: " + rowsInFile + " a počet řádků v databázové tabulce: " + rowsInFile + ".." + date;
-            string reportSuccessText = $"Zálohování tabulky {tableName} proběhlo úspěšně {date}";
-            if (rowsInFile != rowsInTable)
-            {                                              
-                if (File.Exists(reportFile))
+            
+            if (rowsInTable == 0 && rowsInFile == 0)
+            {
+                int rowsInTable1 = rowsInTable;
+                string reportBadText = $"Počet řádků v tabulce {tableName} se nerovná. Počet řádků v CSV souboru: " + rowsInFile + " a počet řádků v databázové tabulce: " + rowsInTable1 + ".." + date;
+                string reportSuccessText = $"Zálohování tabulky {tableName} proběhlo úspěšně {date}";
+                if (rowsInFile != rowsInTable1)
                 {
-                    File.AppendAllText(reportFile, Environment.NewLine + reportBadText);
+                    if (File.Exists(reportFile))
+                    {
+                        File.AppendAllText(reportFile, Environment.NewLine + reportBadText);
+                        return false;
+                    }
+                    else
+                    {
+                        File.WriteAllText(reportFile, reportBadText);
+                        return false;
+                    }
                 }
-                else
+                else if (rowsInFile == rowsInTable1)
                 {
-                    File.WriteAllText(reportFile, reportBadText);
+                    if (File.Exists(reportFile))
+                    {
+                        File.AppendAllText(reportFile, Environment.NewLine + reportSuccessText);
+                        return false;
+                    }
+                    else
+                    {
+                        File.WriteAllText(reportFile, reportSuccessText);
+                        return false;
+                    }
                 }
+                return null;
             }
             else
-            {             
-               
-                if (File.Exists(reportFile))
+            {
+                int rowsInTable1 = rowsInTable - 1;
+                string reportBadText = $"Počet řádků v tabulce {tableName} se nerovná. Počet řádků v CSV souboru: " + rowsInFile + " a počet řádků v databázové tabulce: " + rowsInTable1 + ".." + date;
+                string reportSuccessText = $"Zálohování tabulky {tableName} proběhlo úspěšně {date}";
+                if (rowsInFile != rowsInTable1)
                 {
-                    File.AppendAllText(reportFile, Environment.NewLine + reportSuccessText);
+                    if (File.Exists(reportFile))
+                    {
+                        File.AppendAllText(reportFile, Environment.NewLine + reportBadText);
+                        return false;
+                    }
+                    else
+                    {
+                        File.WriteAllText(reportFile, reportBadText);
+                        return false;
+                    }
                 }
-                else
+                else if (rowsInFile == rowsInTable1)
                 {
-                    File.WriteAllText(reportFile, reportSuccessText);
+                    if (File.Exists(reportFile))
+                    {
+                        string TruncateText = $"TRUNCATE {tableName} proběhl úspěšně {date}";
+                        File.AppendAllText(reportFile, Environment.NewLine + reportSuccessText + "\r\n" + TruncateText);                      
+                        return true;
+                    }
+                    else
+                    {
+                        string TruncateText = $"TRUNCATE {tableName} proběhl úspěšně {date}";
+                        File.WriteAllText(reportFile, reportSuccessText + "\r\n" + TruncateText);
+                        
+                        return true;
+                    }
                 }
+                return null;
             }
-            
+
         }
-        private string GetConnectionString()
+        private void ClearTable(string tableName)
+        {
+            string tablename = SelectCheck();
+            using (MySqlConnection connection = new MySqlConnection(GetConnectionString()))
+            {
+                connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand($"TRUNCATE TABLE {tableName}", connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private string GetConnectionString() //nastavení připojení
         {
             string a = Convert.ToString(textBoxNastaveniDB.Text);
             string b = Convert.ToString(textBoxDbName.Text);
@@ -275,9 +333,9 @@ namespace DB_to_CSV
             }
         }
 
-        private string SelectCheck()
+        private string SelectCheck()// vyhledá název pro csv soubor, první slovo po FROM
         {
-            string myString = textBoxSelect.Text;
+            string myString = textBoxSelect.Text; //
             string toBeSearched = "FROM";
             int ix = myString.IndexOf(toBeSearched);
 
@@ -343,6 +401,8 @@ namespace DB_to_CSV
                 groupBoxOutput.Enabled = false;
                 groupBoxPrikaz.Enabled = false;
                 buttonStart.Enabled = false;
+                buttonPrikazy.Enabled = false;
+                checkBoxPrikazy.Enabled = false;
                 return true;
 
             }
@@ -353,6 +413,8 @@ namespace DB_to_CSV
                 groupBoxOutput.Enabled = true;
                 groupBoxPrikaz.Enabled = true;
                 buttonStart.Enabled = true;
+                buttonPrikazy.Enabled = true;
+                checkBoxPrikazy.Enabled = true;
                 return false;
             }
         }
@@ -417,6 +479,7 @@ namespace DB_to_CSV
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            
             SaveSettings();
         }
 
@@ -491,40 +554,51 @@ namespace DB_to_CSV
 
         private async void foreachJson()
         {
-            string jsonFilePath = textBoxPrikazy.Text;
-            string jsonText = File.ReadAllText(jsonFilePath);
-            var commands = JsonConvert.DeserializeObject<List<string>>(jsonText);
-            progressBar1.Maximum = commands.Count;
+           // checkBoxService.Enabled = false;
+            label9.Visible = true;
+            progressBar1.Visible = true;
             progressBar1.Step = 1;
             progressBar1.Value = 0;
             progressBar1.Style = ProgressBarStyle.Continuous;
             try
             {
+                string jsonFilePath = textBoxPrikazy.Text;
+                string jsonText = File.ReadAllText(jsonFilePath);
+                var commands = JsonConvert.DeserializeObject<List<string>>(jsonText);
+                progressBar1.Maximum = commands.Count;
                 if (checkBoxService.Checked)
                 {
-
                     foreach (var command in commands)
                     {
-                        try
+                        if (checkBoxService.Checked == true)
                         {
-                            textBoxSelect.Text = command;
-                            await Task.Run(() => GetCSV());
-                            progressBar1.PerformStep();
+                            try
+                            {
+                                textBoxSelect.Text = command;
+                                await Task.Run(() => GetCSV());
+                                progressBar1.PerformStep();
+                            }
+                            catch (Exception)
+                            {
+                                continue;
+                            }
                         }
-                        catch (Exception)
-                        {
-                            continue;
-                        }
-                    }
-                    ShowAutoClosingMessageBox();
+                        
+                    }                  
+                }
+                progressBar1.Value = progressBar1.Maximum;
+                ShowAutoClosingMessageBox();
                     Thread.Sleep(20000); // wait for 20 seconds                    
                     Application.Exit();
-                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Chyba v čtení json souboru či příkazu \r\n \r\n {ex.Message}");
+                MessageBox.Show( $"Chyba v čtení json souboru či příkazu \r\n \r\n {ex.Message}");
+                checkBoxService.Checked = false;
+                CheckBoxChecked();
+                label9.Visible = false;
+                progressBar1.Visible = false;
+
             }
         }
         private void ShowAutoClosingMessageBox()
@@ -584,6 +658,11 @@ namespace DB_to_CSV
             {
                 textBoxSelect.ReadOnly = false;
             }
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
         }
     }
  }

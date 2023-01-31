@@ -30,6 +30,7 @@ namespace DB_to_CSV
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.labelIP = new System.Windows.Forms.Label();
             this.textBoxNastaveniDB = new System.Windows.Forms.TextBox();
             this.labelUserName = new System.Windows.Forms.Label();
@@ -63,6 +64,7 @@ namespace DB_to_CSV
             this.label8 = new System.Windows.Forms.Label();
             this.textBoxPrikazy = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupBoxSetDB.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
             this.groupBoxPrikaz.SuspendLayout();
@@ -357,10 +359,22 @@ namespace DB_to_CSV
             // progressBar1
             // 
             this.progressBar1.BackColor = System.Drawing.Color.Cornsilk;
-            this.progressBar1.Location = new System.Drawing.Point(474, 635);
+            this.progressBar1.Location = new System.Drawing.Point(452, 626);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(158, 35);
+            this.progressBar1.Size = new System.Drawing.Size(226, 44);
             this.progressBar1.TabIndex = 22;
+            this.progressBar1.Visible = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(315, 637);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(113, 20);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Průběh zálohy:";
+            this.label9.Visible = false;
+            this.label9.Click += new System.EventHandler(this.label9_Click);
             // 
             // Form1
             // 
@@ -368,6 +382,7 @@ namespace DB_to_CSV
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Ivory;
             this.ClientSize = new System.Drawing.Size(1137, 699);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.textBoxPrikazy);
             this.Controls.Add(this.label8);
@@ -380,8 +395,9 @@ namespace DB_to_CSV
             this.Controls.Add(this.buttonStart);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = " ";
+            this.Text = " MySQL DB to CSV backup";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBoxSetDB.ResumeLayout(false);
@@ -430,6 +446,7 @@ namespace DB_to_CSV
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox textBoxPrikazy;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label label9;
     }
 }
 
