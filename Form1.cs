@@ -29,9 +29,9 @@ namespace DB_to_CSV
             CheckBoxChecked();           
             try
             {
+                await Task.Delay(TimeSpan.FromSeconds(20));
                 if (checkBoxService.Checked)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(20));
+                {                   
                     foreachJson();
                 }
             }
@@ -449,7 +449,7 @@ namespace DB_to_CSV
                 }
                 else
                 {
-                    MessageBox.Show("Nejdřív zvolte .json soubor s příkazy, abyste mohli zapnout running mode");
+                    MessageBox.Show("Nejdřív zvolte .json soubor s příkazy a označte auto příkazy ze souboru, abyste mohli zapnout running mode");
                     checkBoxService.Checked = false;
                     CheckBoxChecked();
                 }
@@ -557,39 +557,48 @@ namespace DB_to_CSV
            // checkBoxService.Enabled = false;
             label9.Visible = true;
             progressBar1.Visible = true;
-            progressBar1.Step = 1;
             progressBar1.Value = 0;
             progressBar1.Style = ProgressBarStyle.Continuous;
             try
             {
                 string jsonFilePath = textBoxPrikazy.Text;
-                string jsonText = File.ReadAllText(jsonFilePath);
-                var commands = JsonConvert.DeserializeObject<List<string>>(jsonText);
-                progressBar1.Maximum = commands.Count;
-                if (checkBoxService.Checked)
+                if (File.Exists(jsonFilePath))
                 {
-                    foreach (var command in commands)
-                    {
-                        if (checkBoxService.Checked == true)
+                    string jsonText = File.ReadAllText(jsonFilePath);
+                    var commands = JsonConvert.DeserializeObject<List<string>>(jsonText);
+                    progressBar1.Step = commands.Count;
+                        if (checkBoxService.Checked)
                         {
-                            try
+                            foreach (var command in commands)
                             {
-                                textBoxSelect.Text = command;
-                                await Task.Run(() => GetCSV());
-                                progressBar1.PerformStep();
-                            }
-                            catch (Exception)
-                            {
-                                continue;
-                            }
-                        }
+                                if (checkBoxService.Checked == true)
+                                {
+                                    try
+                                    {
+                                        textBoxSelect.Text = command;
+                                        await Task.Run(() => GetCSV());
+                                        progressBar1.PerformStep();
+                                    }
+                                    catch (Exception)
+                                    {
+                                        continue;
+                                    }
+                                }
                         
-                    }                  
+                            }                    
+                        }
+                        progressBar1.Value = progressBar1.Maximum;
+                        ShowAutoClosingMessageBox();
+                        Thread.Sleep(20000); // wait for 20 seconds                    
+                        Application.Exit();
                 }
-                progressBar1.Value = progressBar1.Maximum;
-                ShowAutoClosingMessageBox();
-                    Thread.Sleep(20000); // wait for 20 seconds                    
-                    Application.Exit();
+                else
+                {
+                    MessageBox.Show("Soubor .json neexistuje.");
+                    checkBoxService.Checked = false;
+                    CheckBoxChecked();
+                }
+                   
             }
             catch (Exception ex)
             {
@@ -606,7 +615,7 @@ namespace DB_to_CSV
             System.Threading.Timer timer = null;
             timer = new System.Threading.Timer((o) =>
             {
-                if (MessageBox.Show("Záloha vytvořena, Zkontrolujte report.txt..", "", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
+                if (MessageBox.Show("Záloha vytvořena, Zkontrolujte report.txt.. Aplikace se sama zavře za 20 sekund.", "", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
                 {
                     timer.Dispose();
                 }
