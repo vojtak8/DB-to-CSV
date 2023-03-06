@@ -55,7 +55,9 @@ namespace DB_to_CSV
             checkBoxPrikazy.Checked = Properties.sett.Default.autoCMD;
             checkBoxService.Checked = Properties.sett.Default.service;
             textBoxPrikazy.Text = Properties.sett.Default.jsoncesta;
-            
+            checkBoxTruncate.Checked = Properties.sett.Default.checkBoxTruncate;
+
+
 
         }
         private void SaveSettings()
@@ -71,6 +73,7 @@ namespace DB_to_CSV
             Properties.sett.Default.service = checkBoxService.Checked;
             Properties.sett.Default.jsoncesta = textBoxPrikazy.Text;
             Properties.sett.Default.autoCMD = checkBoxPrikazy.Checked;
+            Properties.sett.Default.checkBoxTruncate = checkBoxPrikazy.Checked;
 
             Properties.sett.Default.Save();
 
@@ -175,9 +178,10 @@ namespace DB_to_CSV
                             rowsInFile++;
                         }                       
                     }
-                    if (CompareRows(rowsInFile, rowsInTable) == true)
+                    if (CompareRows(rowsInFile, rowsInTable) == true && checkBoxTruncate.Checked == true)
                     {
-                      //ClearTable(); pro release odkomentovat
+                        string tablename = SelectCheck();
+                        //ClearTable(tablename); pro release odkomentovat
                     }                   
                     return file;
                     
@@ -286,8 +290,7 @@ namespace DB_to_CSV
 
         }
         private void ClearTable(string tableName)
-        {
-            string tablename = SelectCheck();
+        {           
             using (MySqlConnection connection = new MySqlConnection(GetConnectionString()))
             {
                 connection.Open();
@@ -395,7 +398,7 @@ namespace DB_to_CSV
         {
             if (checkBoxService.Checked)
             {
-                checkBoxService.Text = "Service running";
+                checkBoxService.Text = "Service is running";
                 checkBoxAutoName.Checked = true;
                 groupBoxSetDB.Enabled = false;
                 groupBoxOutput.Enabled = false;
@@ -403,6 +406,8 @@ namespace DB_to_CSV
                 buttonStart.Enabled = false;
                 buttonPrikazy.Enabled = false;
                 checkBoxPrikazy.Enabled = false;
+                checkBoxTruncate.Enabled = false;
+                textBoxPrikazy.Enabled = false;
                 return true;
 
             }
@@ -415,6 +420,8 @@ namespace DB_to_CSV
                 buttonStart.Enabled = true;
                 buttonPrikazy.Enabled = true;
                 checkBoxPrikazy.Enabled = true;
+                checkBoxTruncate.Enabled = true;
+                textBoxPrikazy.Enabled = true;
                 return false;
             }
         }
@@ -585,9 +592,10 @@ namespace DB_to_CSV
                                     }
                                 }
                         
-                            }                    
+                            }  
+                            progressBar1.Value = progressBar1.Maximum;
                         }
-                        progressBar1.Value = progressBar1.Maximum;
+                        
                         ShowAutoClosingMessageBox();
                         Thread.Sleep(20000); // wait for 20 seconds                    
                         Application.Exit();
@@ -620,7 +628,7 @@ namespace DB_to_CSV
                     timer.Dispose();
                 }
             },
-            null, 0, 10000);
+            null, 0, 20000);
         }
 
         private void textBoxSelect_Click(object sender, EventArgs e)
@@ -670,6 +678,11 @@ namespace DB_to_CSV
         }
 
         private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
 
         }

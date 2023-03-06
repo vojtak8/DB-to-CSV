@@ -65,6 +65,7 @@ namespace DB_to_CSV
             this.textBoxPrikazy = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label9 = new System.Windows.Forms.Label();
+            this.checkBoxTruncate = new System.Windows.Forms.CheckBox();
             this.groupBoxSetDB.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
             this.groupBoxPrikaz.SuspendLayout();
@@ -75,7 +76,7 @@ namespace DB_to_CSV
             this.labelIP.AutoSize = true;
             this.labelIP.Location = new System.Drawing.Point(31, 61);
             this.labelIP.Name = "labelIP";
-            this.labelIP.Size = new System.Drawing.Size(132, 24);
+            this.labelIP.Size = new System.Drawing.Size(110, 20);
             this.labelIP.TabIndex = 0;
             this.labelIP.Text = "Nastavení DB:";
             // 
@@ -91,7 +92,7 @@ namespace DB_to_CSV
             this.labelUserName.AutoSize = true;
             this.labelUserName.Location = new System.Drawing.Point(31, 277);
             this.labelUserName.Name = "labelUserName";
-            this.labelUserName.Size = new System.Drawing.Size(104, 24);
+            this.labelUserName.Size = new System.Drawing.Size(87, 20);
             this.labelUserName.TabIndex = 2;
             this.labelUserName.Text = "Username:";
             // 
@@ -100,7 +101,7 @@ namespace DB_to_CSV
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(31, 359);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 24);
+            this.label2.Size = new System.Drawing.Size(54, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "Heslo:";
             // 
@@ -125,7 +126,7 @@ namespace DB_to_CSV
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(31, 128);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 24);
+            this.label1.Size = new System.Drawing.Size(79, 20);
             this.label1.TabIndex = 6;
             this.label1.Text = "DB-Name";
             // 
@@ -141,7 +142,7 @@ namespace DB_to_CSV
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(31, 205);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(174, 24);
+            this.label3.Size = new System.Drawing.Size(145, 20);
             this.label3.TabIndex = 8;
             this.label3.Text = "Integrated security:";
             // 
@@ -150,7 +151,7 @@ namespace DB_to_CSV
             this.checkBoxIS.AutoSize = true;
             this.checkBoxIS.Location = new System.Drawing.Point(280, 205);
             this.checkBoxIS.Name = "checkBoxIS";
-            this.checkBoxIS.Size = new System.Drawing.Size(77, 29);
+            this.checkBoxIS.Size = new System.Drawing.Size(64, 24);
             this.checkBoxIS.TabIndex = 9;
             this.checkBoxIS.Text = "Ano";
             this.checkBoxIS.UseVisualStyleBackColor = true;
@@ -182,7 +183,7 @@ namespace DB_to_CSV
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(23, 65);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(122, 24);
+            this.label4.Size = new System.Drawing.Size(102, 20);
             this.label4.TabIndex = 12;
             this.label4.Text = "Umístění csv:";
             // 
@@ -229,7 +230,7 @@ namespace DB_to_CSV
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(31, 434);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(46, 24);
+            this.label6.Size = new System.Drawing.Size(38, 20);
             this.label6.TabIndex = 10;
             this.label6.Text = "Port";
             // 
@@ -265,7 +266,7 @@ namespace DB_to_CSV
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(516, 233);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 24);
+            this.label7.Size = new System.Drawing.Size(36, 20);
             this.label7.TabIndex = 17;
             this.label7.Text = ".csv";
             // 
@@ -274,7 +275,7 @@ namespace DB_to_CSV
             this.checkBoxAutoName.AutoSize = true;
             this.checkBoxAutoName.Location = new System.Drawing.Point(199, 286);
             this.checkBoxAutoName.Name = "checkBoxAutoName";
-            this.checkBoxAutoName.Size = new System.Drawing.Size(281, 29);
+            this.checkBoxAutoName.Size = new System.Drawing.Size(234, 24);
             this.checkBoxAutoName.TabIndex = 16;
             this.checkBoxAutoName.Text = "autoName dle názvu tabulky";
             this.checkBoxAutoName.UseVisualStyleBackColor = true;
@@ -285,7 +286,7 @@ namespace DB_to_CSV
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(23, 230);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(101, 24);
+            this.label5.Size = new System.Drawing.Size(84, 20);
             this.label5.TabIndex = 15;
             this.label5.Text = "Název csv:";
             // 
@@ -320,7 +321,7 @@ namespace DB_to_CSV
             // buttonPrikazy
             // 
             this.buttonPrikazy.Location = new System.Drawing.Point(1409, 443);
-            this.buttonPrikazy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonPrikazy.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPrikazy.Name = "buttonPrikazy";
             this.buttonPrikazy.Size = new System.Drawing.Size(136, 49);
             this.buttonPrikazy.TabIndex = 18;
@@ -344,7 +345,7 @@ namespace DB_to_CSV
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(881, 449);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(158, 24);
+            this.label8.Size = new System.Drawing.Size(132, 20);
             this.label8.TabIndex = 20;
             this.label8.Text = "Příkazy v souboru";
             // 
@@ -370,11 +371,22 @@ namespace DB_to_CSV
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(454, 917);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(136, 24);
+            this.label9.Size = new System.Drawing.Size(113, 20);
             this.label9.TabIndex = 23;
             this.label9.Text = "Průběh zálohy:";
             this.label9.Visible = false;
             this.label9.Click += new System.EventHandler(this.label9_Click);
+            // 
+            // checkBoxTruncate
+            // 
+            this.checkBoxTruncate.AutoSize = true;
+            this.checkBoxTruncate.Location = new System.Drawing.Point(1096, 566);
+            this.checkBoxTruncate.Name = "checkBoxTruncate";
+            this.checkBoxTruncate.Size = new System.Drawing.Size(275, 24);
+            this.checkBoxTruncate.TabIndex = 24;
+            this.checkBoxTruncate.Text = "Smazání tabulky po vytvoření CSV";
+            this.checkBoxTruncate.UseVisualStyleBackColor = true;
+            this.checkBoxTruncate.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
             // 
             // Form1
             // 
@@ -382,6 +394,7 @@ namespace DB_to_CSV
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Ivory;
             this.ClientSize = new System.Drawing.Size(1599, 993);
+            this.Controls.Add(this.checkBoxTruncate);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.textBoxPrikazy);
@@ -447,6 +460,7 @@ namespace DB_to_CSV
         private System.Windows.Forms.TextBox textBoxPrikazy;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox checkBoxTruncate;
     }
 }
 

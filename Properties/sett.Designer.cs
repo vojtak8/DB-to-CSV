@@ -154,5 +154,17 @@ namespace DB_to_CSV.Properties {
                 this["autoCMD"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool checkBoxTruncate {
+            get {
+                return ((bool)(this["checkBoxTruncate"]));
+            }
+            set {
+                this["checkBoxTruncate"] = value;
+            }
+        }
     }
 }
