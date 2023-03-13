@@ -91,8 +91,7 @@ namespace DB_to_CSV
                         cn.Open();
                     }
                     catch (Exception ex)
-                    {
-                        MessageBox.Show($"nepodařilo se navázat spojení, zkontroluj údaje /n {ex.Message}");
+                    {                       
                         cn.Close();                        
 
                     }
@@ -181,7 +180,7 @@ namespace DB_to_CSV
                     if (CompareRows(rowsInFile, rowsInTable) == true && checkBoxTruncate.Checked == true)
                     {
                         string tablename = SelectCheck();
-                        //ClearTable(tablename); pro release odkomentovat
+                        ClearTable(tablename); //mazání obsahu tabulky po záloze do csv
                     }                   
                     return file;
                     

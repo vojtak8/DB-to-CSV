@@ -410,7 +410,7 @@ namespace DB_to_CSV
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = " MySQL DB to CSV backup";
+            this.Text = " MySQL DB to CSV backup v1.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBoxSetDB.ResumeLayout(false);
