@@ -33,7 +33,7 @@ namespace DB_to_CSV
                 await Task.Delay(TimeSpan.FromSeconds(10));
                 if (checkBoxService.Checked && !isForeachRunning)
                 {                   
-                    await foreachJson();
+                    foreachJson();
                 }
             }
             catch (Exception)
@@ -94,12 +94,13 @@ namespace DB_to_CSV
                         cn.Open();
                     }
                     catch (Exception ex)
-                    {                       
+                    {
+                        MessageBox.Show("Nepodařilo se připojit na MySql server" + ex.Message);
                         cn.Close();                        
 
                     }
-                    string cmd = textBoxSelect.Text; //command query
-                    
+
+                    string cmd = textBoxSelect.Text; //command query                 
                                                        
                     return CreateCSV(new MySqlCommand(cmd, cn).ExecuteReader());
                 }
@@ -168,6 +169,9 @@ namespace DB_to_CSV
 
                 try
                 {
+                    int maxRowsPerFile = 100000; // Maximální počet řádků v jednom souboru
+                    int partIndex = 1; // Index části
+
                     using (var writer = new StreamWriter(file, false, Encoding.UTF8))
                     {
                         writer.WriteLine(header);
@@ -214,16 +218,28 @@ namespace DB_to_CSV
         }
         private int CountRowsInTable(string tableName)
         {
-            using (MySqlConnection connection = new MySqlConnection(GetConnectionString()))
+            try
             {
-                connection.Open();
-                using (MySqlCommand cmd = new MySqlCommand($"SELECT COUNT(*) FROM {tableName}", connection))
+                using (MySqlConnection connection = new MySqlConnection(GetConnectionString()))
                 {
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    connection.Open();
 
-                    return count;
+                    using (MySqlCommand cmd = new MySqlCommand($"SELECT COUNT(*) FROM {tableName}", connection))
+                    {
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        connection.Close();
+
+                        return count;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show("Nepodařilo se vypočítat velikost tabulky " + tableName +  e.Message);
+                throw;
+            }
+
         }
         private void CompareRows(int rowsInFile, int rowsInTable, string tableName)
         {
@@ -324,13 +340,13 @@ namespace DB_to_CSV
 
             if (checkBoxIS.Checked)
             {
-                return "Server=" + a + e + "Port=" + f + e + "Database=" + b + e + "Persist Security Info = True;" + "Connection Timeout = 3000;";
+                return "Server=" + a + e + "Port=" + f + e + "Database=" + b + e + "Persist Security Info = True;";
             }
             else
             {
                 //return "Server=192.168.225.136;Database=MySQL_DB_ForTSx64;Uid=myUsername;Pwd=MySQL4TS;Encrypt=true;";
                 //return "Server=" + a + e + "Database=" + b + e + "Integrated Security=false" + e + "User ID=" + c + e + "Password=" + d + e;
-                return "Server=" + a + e + "Port=" + f + e +"Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e + "Connection Timeout = 3000;";
+                return "Server=" + a + e + "Port=" + f + e +"Database=" + b + e + "Uid=" + c + e + "Pwd=" + d + e;
             }
         }
 
@@ -439,7 +455,7 @@ namespace DB_to_CSV
         }
 
         public bool isForeachRunning = false;
-        private async void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             CheckBoxChecked();
 
@@ -464,7 +480,7 @@ namespace DB_to_CSV
                     else if (textBoxPrikazy.Text.Length != 0 && isForeachRunning == false)
                     {
                             checkBoxAutoName.Checked = true;                           
-                            await foreachJson(); // spuštění funkce v novém vláknu                           
+                             foreachJson(); // spuštění funkce v novém vláknu                           
                    }
                 }
                 else
@@ -574,7 +590,7 @@ namespace DB_to_CSV
             }
         }
 
-        private async Task foreachJson()
+        private async void foreachJson()
         {
             // checkBoxService.Enabled = false;
 
@@ -588,6 +604,7 @@ namespace DB_to_CSV
                 try
                 {
                     string jsonFilePath = textBoxPrikazy.Text;
+
                     if (File.Exists(jsonFilePath))
                     {
                         isForeachRunning = true;
@@ -597,6 +614,7 @@ namespace DB_to_CSV
 
                         if (checkBoxService.Checked)
                         {
+                            this.Cursor = Cursors.WaitCursor;
                             foreach (var command in commands)
                             {
                                 if (checkBoxService.Checked == true)
@@ -605,15 +623,14 @@ namespace DB_to_CSV
                                     {
                                         textBoxSelect.Text = command;
 
-                                        Task getCSVTask = Task.Run(() => GetCSV());
-
-                                        await getCSVTask;
+                                        await Task.Run(() => GetCSV());
+                                       
                                     }
 
                                     catch (Exception e)
                                     {
-                                        MessageBox.Show("Záloha selhala." + e.ToString());
-                                        break;
+                                        MessageBox.Show("Záloha tabulky selhala" + command + e.ToString());
+                                        continue;
                                     }
                                     finally
                                     {
@@ -638,6 +655,7 @@ namespace DB_to_CSV
                                 
                                 
                             }
+                            this.Cursor = Cursors.Default;
                             progressBar1.Value = progressBar1.Maximum;
                             tableNames.Clear();
                             
